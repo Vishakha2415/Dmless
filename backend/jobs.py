@@ -11,7 +11,7 @@ from datetime import datetime
 import logging
 
 # Import database functions
-from database import (
+from backend.database import (
     get_user_by_id,
     db
 )
@@ -399,4 +399,5 @@ async def activate_all_jobs():
             "modified_count": result.modified_count
         }
     except Exception as e:
+
         return {"success": False, "error": str(e)}
