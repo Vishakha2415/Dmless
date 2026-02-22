@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - Apply for Job</title>
+    <style>
+        /* Keep all your existing styles exactly as they are */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #1e3a5f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Job Header */
+        .job-header {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .job-header h1 {
+            color: #1e3a5f;
+            font-size: 24px;
+            margin-bottom: 0.5rem;
+        }
+
+        .company-name {
+            color: #2b4c7c;
+            font-size: 16px;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #2b4c7c;
+            font-size: 14px;
+            margin-top: 0.5rem;
+        }
+
+        .job-meta i {
+            margin-right: 0.3rem;
+            color: #1e3a5f;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: #1e3a5f;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1e3a5f;
+            border-radius: 100px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* MCQ Card */
+        .mcq-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .question-number {
+            color: #2b4c7c;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            color: #1e3a5f;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #f8fafd;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            background: #e8f0fe;
+            border-color: #1e3a5f;
+        }
+
+        .option-item.selected {
+            background: #e8f0fe;
+            border-color: #1e3a5f;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        .option-marker {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #cbd6e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-right: 1rem;
+        }
+
+        .option-item.selected .option-marker {
+            background: #1e3a5f;
+            border-color: #1e3a5f;
+            color: white;
+        }
+
+        .option-text {
+            font-size: 16px;
+            color: #1e3a5f;
+            flex: 1;
+        }
+
+        /* Button */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #2b4c7c;
+        }
+
+        .btn-primary:disabled {
+            background: #cbd6e6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Message */
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .message.warning {
+            background: #fff3cd;
+            border: 1px solid #ffe69c;
+            color: #856404;
+        }
+
+        .message.info {
+            background: #dbeafe;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        /* Knockout Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 400px;
+            text-align: center;
+            margin: 0 1rem;
+        }
+
+        .modal-icon {
+            font-size: 64px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-icon.error {
+            color: #dc2626;
+        }
+
+        .modal-icon.success {
+            color: #16a34a;
+        }
+
+        .modal h2 {
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+        }
+
+        .modal p {
+            color: #2b4c7c;
+            margin-bottom: 2rem;
+        }
+
+        .modal-btn {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            margin: 0 0.5rem;
+        }
+
+        .modal-btn:hover {
+            background: #2b4c7c;
+        }
+
+        .modal-btn.secondary {
+            background: white;
+            color: #1e3a5f;
+            border: 1px solid #cbd6e6;
+        }
+
+        .modal-btn.secondary:hover {
+            background: #f8fafd;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #cbd6e6;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3a5f;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loading-state p {
+            color: #2b4c7c;
+            font-size: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .job-meta {
+                flex-wrap: wrap;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+        }
+    </style>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <h2>DMless</h2>
+        </div>
+        <div class="nav-links">
+            <a href="/static/jobs.html">Browse Jobs</a>
+            <a href="/static/my-applications.html">My Applications</a>
+        </div>
+        <div class="user-menu">
+            <span class="user-name" id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Messages -->
+        <div id="errorMessage" class="message error"></div>
+        <div id="successMessage" class="message success"></div>
+        <div id="warningMessage" class="message warning"></div>
+        <div id="infoMessage" class="message info"></div>
+
+        <!-- Job Header (initially hidden) -->
+        <div class="job-header" id="jobHeader" style="display: none;">
+            <h1 id="jobTitle">Loading Job...</h1>
+            <div class="company-name" id="companyName">DMless</div>
+            <div class="job-meta">
+                <span><i class="fas fa-map-marker-alt"></i> <span id="jobLocation">Remote</span></span>
+                <span><i class="fas fa-briefcase"></i> <span id="jobType">Full-time</span></span>
+            </div>
+        </div>
+
+        <!-- Progress Bar (initially hidden) -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-header">
+                <span>Question <span id="currentQuestion">1</span> of <span id="totalQuestions">5</span></span>
+                <span id="scoreDisplay">0/5 Correct</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 20%;"></div>
+            </div>
+        </div>
+
+        <!-- MCQ Card (initially hidden) -->
+        <div class="mcq-card" id="mcqCard" style="display: none;">
+            <div class="question-number" id="questionNumber">Question 1/5</div>
+            <div class="question-text" id="questionText">Loading question...</div>
+            
+            <div class="options-container" id="optionsContainer">
+                <!-- Options will be dynamically added here -->
+            </div>
+
+            <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">
+                Next Question
+            </button>
+        </div>
+
+        <!-- Loading State (initially visible) -->
+        <div id="loadingState" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading assessment questions...</p>
+        </div>
+
+        <!-- No Job ID State (initially hidden) -->
+        <div id="noJobState" class="loading-state" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #dc2626; margin-bottom: 1rem;"></i>
+            <h3 style="color: #1e3a5f; margin-bottom: 1rem;">No Job Selected</h3>
+            <p style="color: #2b4c7c; margin-bottom: 2rem;">Please select a job from the jobs page to apply.</p>
+            <button class="modal-btn" onclick="redirectToJobs()">Browse Jobs</button>
+        </div>
+    </div>
+
+    <!-- Knockout Modal -->
+    <div class="modal" id="knockoutModal">
+        <div class="modal-content">
+            <div class="modal-icon error">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h2>You've Been Knocked Out!</h2>
+            <p id="knockoutMessage">Sorry, your answer was incorrect. You cannot proceed with this application.</p>
+            <button class="modal-btn" onclick="redirectToJobs()">Browse Other Jobs</button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>All Answers Correct!</h2>
+            <p>Congratulations! You've passed the screening. Please upload your resume to complete the application.</p>
+            <button class="modal-btn" onclick="goToUpload()">Upload Resume</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-icon error">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2>Something Went Wrong</h2>
+            <p id="errorModalMessage">An error occurred while loading the job.</p>
+            <button class="modal-btn secondary" onclick="closeErrorModal()">Try Again</button>
+            <button class="modal-btn" onclick="redirectToJobs()">Browse Jobs</button>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentUser = null;
+        let currentJob = null;
+        let currentQuestionIndex = 0;
+        let questions = [];
+        let answers = [];
+        let score = 0;
+        let jobId = null;
+
+        // Get job ID from URL
+        function getJobIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Check authentication
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = '/static/login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(user);
+            console.log('👤 Current user:', currentUser);
+            
+            if (currentUser.role !== 'candidate') {
+                window.location.href = '/static/dashboard.html';
+                return;
+            }
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            
+            // Get job ID and load questions
+            jobId = getJobIdFromUrl();
+            console.log('📋 Job ID from URL:', jobId);
+            
+            if (!jobId) {
+                // No job ID, show error state
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('noJobState').style.display = 'block';
+                return;
+            }
+            
+            loadJobQuestions();
+        })();
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/static/login.html';
+        }
+
+        // Show info message
+        function showInfo(message) {
+            const el = document.getElementById('infoMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        // Show error modal
+        function showErrorModal(message) {
+            document.getElementById('errorModalMessage').textContent = message;
+            document.getElementById('errorModal').classList.add('show');
+        }
+
+        // Close error modal
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.remove('show');
+        }
+
+        // Load job questions from backend
+        async function loadJobQuestions() {
+            try {
+                showInfo('Fetching job details...');
+                
+                console.log('🔍 Fetching job:', jobId);
+                const response = await fetch(`/jobs/${jobId}`);
+                const result = await response.json();
+                
+                console.log('📦 Job data:', result);
+                
+                if (result.success) {
+                    currentJob = result.job;
+                    questions = result.job.mcqs || [];
+                    
+                    console.log('📚 Questions loaded:', questions.length);
+                    
+                    if (!questions || questions.length === 0) {
+                        showErrorModal('This job has no assessment questions.');
+                        return;
+                    }
+                    
+                    // Display job info
+                    document.getElementById('jobTitle').textContent = currentJob.title || 'Untitled Job';
+                    document.getElementById('jobLocation').textContent = currentJob.location || 'Remote';
+                    document.getElementById('jobType').textContent = currentJob.job_type || 'Full-time';
+                    
+                    // Show UI elements
+                    document.getElementById('jobHeader').style.display = 'block';
+                    document.getElementById('progressContainer').style.display = 'block';
+                    document.getElementById('mcqCard').style.display = 'block';
+                    document.getElementById('loadingState').style.display = 'none';
+                    
+                    // Initialize answers array
+                    answers = new Array(questions.length).fill(null);
+                    
+                    // Show first question
+                    displayQuestion(0);
+                } else {
+                    showErrorModal('Failed to load job questions. The job may not exist.');
+                }
+            } catch (error) {
+                console.error('❌ Error loading job:', error);
+                showErrorModal('Unable to connect to server. Please check your connection.');
+            }
+        }
+
+        // Display question
+        function displayQuestion(index) {
+            if (!questions || questions.length === 0) return;
+            
+            const question = questions[index];
+            console.log(`📌 Question ${index + 1}:`, question.question);
+            
+            // Update progress
+            document.getElementById('currentQuestion').textContent = index + 1;
+            document.getElementById('totalQuestions').textContent = questions.length;
+            document.getElementById('questionNumber').textContent = `Question ${index + 1}/${questions.length}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update progress bar
+            const progress = ((index + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update score display
+            document.getElementById('scoreDisplay').textContent = `${score}/${questions.length} Correct`;
+            
+            // Generate options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((opt, optIndex) => {
+                const optionLetters = ['A', 'B', 'C', 'D'];
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-item';
+                if (answers[index] === opt.option) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.onclick = () => selectOption(opt.option);
+                
+                optionDiv.innerHTML = `
+                    <div class="option-marker">${optionLetters[optIndex]}</div>
+                    <div class="option-text">${opt.text}</div>
+                `;
+                
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            // Update button text
+            const submitBtn = document.getElementById('submitBtn');
+            if (index === questions.length - 1) {
+                submitBtn.textContent = 'Submit Final Answer';
+            } else {
+                submitBtn.textContent = 'Next Question';
+            }
+            
+            // Enable/disable submit button based on selection
+            submitBtn.disabled = answers[index] === null;
+        }
+
+        // Select option
+        function selectOption(optionValue) {
+            answers[currentQuestionIndex] = optionValue;
+            console.log(`✅ Selected option ${optionValue} for question ${currentQuestionIndex + 1}`);
+            
+            // Update UI
+            const options = document.querySelectorAll('.option-item');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Find and highlight selected option
+            const selectedOption = Array.from(options).find((opt, idx) => {
+                return questions[currentQuestionIndex].options[idx].option === optionValue;
+            });
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            // Enable submit button
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Submit answer
+        async function submitAnswer() {
+            const selectedAnswer = answers[currentQuestionIndex];
+            if (!selectedAnswer) {
+                showWarning('Please select an answer');
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            const isCorrect = question.correct_answer === selectedAnswer;
+            
+            console.log(`🎯 Question ${currentQuestionIndex + 1}: ${isCorrect ? '✓ Correct' : '✗ Wrong'}`);
+            
+            if (isCorrect) {
+                score++;
+                document.getElementById('scoreDisplay').textContent = `${score}/${questions.length} Correct`;
+            }
+            
+            // Check if this was the last question
+            if (currentQuestionIndex === questions.length - 1) {
+                await finishAssessment();
+            } else {
+                // Move to next question
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            }
+        }
+
+        // Finish assessment
+        async function finishAssessment() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            
+            // Check if all answers are correct
+            const allCorrect = score === questions.length;
+            console.log('🏁 Assessment complete. All correct:', allCorrect);
+            console.log('📊 Final score:', score, 'out of', questions.length);
+            
+            try {
+                // Prepare submission data
+                const submissionData = {
+                    candidate_id: currentUser.user_id,
+                    answers: answers.map((ans, idx) => ({
+                        question_id: idx,
+                        question: questions[idx].question,
+                        selected_option: ans,
+                        is_correct: questions[idx].correct_answer === ans
+                    })),
+                    score: score,
+                    total_questions: questions.length
+                };
+                
+                console.log('📤 Submitting application:', submissionData);
+                
+                // Submit assessment to backend
+                const response = await fetch(`/applications/submit/${jobId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(submissionData)
+                });
+                
+                const result = await response.json();
+                console.log('📥 Submission result:', result);
+                
+                if (result.success) {
+                    if (allCorrect) {
+                        console.log('✅ All correct! Showing success modal');
+                        // Show success modal
+                        document.getElementById('successModal').classList.add('show');
+                    } else {
+                        console.log('❌ Knocked out! Showing knockout modal');
+                        // Show knockout modal
+                        document.getElementById('knockoutMessage').textContent = 
+                            `You got ${score} out of ${questions.length} correct. You need all correct to proceed.`;
+                        document.getElementById('knockoutModal').classList.add('show');
+                    }
+                } else {
+                    showError(result.message || 'Failed to submit assessment');
+                    submitBtn.classList.remove('loading');
+                }
+            } catch (error) {
+                console.error('❌ Error submitting assessment:', error);
+                showError('Unable to connect to server');
+                submitBtn.classList.remove('loading');
+            }
+        }
+
+        // Redirect to upload page
+        function goToUpload() {
+            console.log('➡️ Redirecting to upload page with job ID:', jobId);
+            window.location.href = `/static/upload-resume.html?job_id=${jobId}`;
+        }
+
+        // Redirect to jobs page
+        function redirectToJobs() {
+            console.log('➡️ Redirecting to jobs page');
+            window.location.href = '/static/jobs.html';
+        }
+
+        // Helper functions
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        function showSuccess(message) {
+            const el = document.getElementById('successMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 5000);
+        }
+
+        function showWarning(message) {
+            const el = document.getElementById('warningMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

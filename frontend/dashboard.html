@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - Recruiter Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #1e3a5f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h1 {
+            color: #1e3a5f;
+            font-size: 28px;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            color: #2b4c7c;
+            font-size: 16px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 2;
+            position: relative;
+            min-width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 45px;
+            font-size: 15px;
+            border: 1px solid #cbd6e6;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e3a5f;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a9db0;
+            font-size: 16px;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #8a9db0;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .clear-search:hover {
+            color: #1e3a5f;
+            background: #f0f4fa;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-options select {
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid #cbd6e6;
+            border-radius: 8px;
+            background: white;
+            color: #1e3a5f;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .filter-options select:focus {
+            outline: none;
+            border-color: #1e3a5f;
+        }
+
+        .search-stats {
+            font-size: 14px;
+            color: #2b4c7c;
+            padding-top: 0.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .search-stats span {
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #cbd6e6;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(30, 58, 95, 0.15);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .metric-title {
+            color: #2b4c7c;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .metric-icon.total {
+            background: #e8f0fe;
+            color: #1e3a5f;
+        }
+
+        .metric-icon.applied {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .metric-icon.shortlisted {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .metric-icon.knocked {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-change {
+            font-size: 13px;
+            color: #2b4c7c;
+        }
+
+        .metric-change.positive {
+            color: #2e7d32;
+        }
+
+        .metric-change.negative {
+            color: #c62828;
+        }
+
+        /* Jobs Table */
+        .jobs-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h3 {
+            color: #1e3a5f;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .create-job-btn {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .create-job-btn:hover {
+            background: #2b4c7c;
+        }
+
+        .jobs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .jobs-table th {
+            text-align: left;
+            padding: 1rem;
+            color: #2b4c7c;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid #cbd6e6;
+        }
+
+        .jobs-table td {
+            padding: 1rem;
+            color: #1e3a5f;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .jobs-table tr:hover {
+            background: #f8fafd;
+        }
+
+        .job-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-closed {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-draft {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid #cbd6e6;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            color: #1e3a5f;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 0.5rem;
+        }
+
+        .action-btn:hover {
+            background: #1e3a5f;
+            color: white;
+            border-color: #1e3a5f;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #2b4c7c;
+            font-size: 16px;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3a5f;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error-state {
+            text-align: center;
+            padding: 3rem;
+            background: #ffebee;
+            border-radius: 12px;
+            color: #c62828;
+        }
+
+        .retry-btn {
+            margin-top: 1rem; 
+            padding: 0.75rem 1.5rem; 
+            background: #1e3a5f; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+        }
+
+        .retry-btn:hover {
+            background: #2b4c7c;
+        }
+
+        /* No Jobs Message */
+        .no-jobs-message {
+            text-align: center; 
+            padding: 3rem; 
+            color: #2b4c7c;
+            background: #f8fafd;
+            border-radius: 12px;
+            border: 2px dashed #cbd6e6;
+        }
+
+        .no-jobs-message i {
+            font-size: 48px; 
+            opacity: 0.5; 
+            margin-bottom: 1rem;
+            color: #1e3a5f;
+        }
+
+        .no-jobs-message a {
+            color: #1e3a5f; 
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: #e8f0fe;
+            border-radius: 8px;
+        }
+
+        .no-jobs-message a:hover {
+            background: #d0e0fc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .jobs-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .filter-options {
+                width: 100%;
+            }
+
+            .filter-options select {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .filter-options {
+                flex-direction: column;
+            }
+
+            .filter-options select {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <h2>DMless</h2>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active">Dashboard</a>
+            <a href="/static/create-job.html">Post Job</a>
+        </div>
+        <div class="user-menu">
+            <span class="user-name" id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1 id="welcomeMessage">Welcome back!</h1>
+            <p>Here's what's happening with your job postings.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading your dashboard...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 1rem;"></i>
+            <h3>Failed to load dashboard</h3>
+            <p id="errorMessage">Please try refreshing the page</p>
+            <button class="retry-btn" onclick="loadDashboard()">Retry</button>
+        </div>
+
+        <!-- Dashboard Content (initially hidden) -->
+        <div id="dashboardContent" style="display: none;">
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Search jobs by title, description, location or status..."
+                            onkeyup="handleSearch()"
+                        >
+                        <button class="clear-search" onclick="clearSearch()" id="clearSearchBtn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-options">
+                        <select id="statusFilter" onchange="handleFilter()">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="closed">Closed</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                        
+                        <select id="sortBy" onchange="handleSort()">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="title">Title A-Z</option>
+                            <option value="applications">Most Applications</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="search-stats" id="searchStats">
+                    Showing <span id="visibleCount">0</span> of <span id="totalCount">0</span> jobs
+                </div>
+            </div>
+
+            <!-- Metrics Grid -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Total Jobs</span>
+                        <span class="metric-icon total"><i class="fas fa-briefcase"></i></span>
+                    </div>
+                    <div class="metric-value" id="totalJobs">0</div>
+                    <div class="metric-change" id="activeJobs">0 active</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Total Applications</span>
+                        <span class="metric-icon applied"><i class="fas fa-users"></i></span>
+                    </div>
+                    <div class="metric-value" id="totalApplications">0</div>
+                    <div class="metric-change" id="applicationsTrend">Across all jobs</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Shortlisted</span>
+                        <span class="metric-icon shortlisted"><i class="fas fa-check-circle"></i></span>
+                    </div>
+                    <div class="metric-value" id="shortlisted">0</div>
+                    <div class="metric-change positive" id="shortlistedPercent">0% of total</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">Knocked Out</span>
+                        <span class="metric-icon knocked"><i class="fas fa-times-circle"></i></span>
+                    </div>
+                    <div class="metric-value" id="knockedOut">0</div>
+                    <div class="metric-change negative" id="knockedOutPercent">0% of total</div>
+                </div>
+            </div>
+
+            <!-- Jobs Table -->
+            <div class="jobs-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-briefcase" style="margin-right: 8px;"></i> Your Job Postings</h3>
+                    <a href="/static/create-job.html" class="create-job-btn">
+                        <i class="fas fa-plus"></i> Create New Job
+                    </a>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table class="jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Location</th>
+                                <th>Posted Date</th>
+                                <th>Status</th>
+                                <th>Applications</th>
+                                <th>Shortlisted</th>
+                                <th>Knocked Out</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jobsTableBody">
+                            <!-- Jobs will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="noJobsMessage" class="no-jobs-message" style="display: none;">
+                    <i class="fas fa-briefcase"></i>
+                    <p>No jobs found matching your criteria.</p>
+                    <a href="/static/create-job.html">Create your first job posting</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store current user
+        let currentUser = null;
+
+        // Check authentication on page load
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = '/static/login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(user);
+            if (currentUser.role !== 'recruiter') {
+                window.location.href = '/static/apply.html';
+                return;
+            }
+            
+            // Display user name
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${currentUser.name.split(' ')[0]}!`;
+            
+            // Load dashboard data
+            loadDashboard();
+        })();
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/static/login.html';
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+            // Show loading, hide content and error
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+            
+            try {
+                // Get current filter values
+                const searchTerm = document.getElementById('searchInput').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+                const sortBy = document.getElementById('sortBy').value;
+                
+                // Build URL with query parameters
+                let url = `/dashboard/${currentUser.user_id}`;
+                const params = new URLSearchParams();
+                
+                if (searchTerm) params.append('search', searchTerm);
+                if (statusFilter && statusFilter !== 'all') params.append('status', statusFilter);
+                if (sortBy) params.append('sort', sortBy);
+                
+                const queryString = params.toString();
+                if (queryString) {
+                    url += '?' + queryString;
+                }
+                
+                console.log('Fetching dashboard:', url);
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                console.log('Dashboard data received:', result);
+                
+                if (result.success) {
+                    updateDashboard(result.data);
+                    
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
+                } else {
+                    throw new Error(result.message || 'Failed to load dashboard');
+                }
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorState').style.display = 'block';
+                document.getElementById('errorMessage').textContent = error.message;
+            }
+        }
+
+        // Update dashboard UI with data
+        function updateDashboard(data) {
+            // Safely update metrics with null checks
+            const totalJobsEl = document.getElementById('totalJobs');
+            const activeJobsEl = document.getElementById('activeJobs');
+            const totalApplicationsEl = document.getElementById('totalApplications');
+            const shortlistedEl = document.getElementById('shortlisted');
+            const knockedOutEl = document.getElementById('knockedOut');
+            const shortlistedPercentEl = document.getElementById('shortlistedPercent');
+            const knockedOutPercentEl = document.getElementById('knockedOutPercent');
+            const visibleCountEl = document.getElementById('visibleCount');
+            const totalCountEl = document.getElementById('totalCount');
+            
+            if (totalJobsEl) totalJobsEl.textContent = data.total_jobs || 0;
+            if (activeJobsEl) activeJobsEl.textContent = `${data.active_jobs || 0} active`;
+            if (totalApplicationsEl) totalApplicationsEl.textContent = data.total_applications || 0;
+            if (shortlistedEl) shortlistedEl.textContent = data.shortlisted || 0;
+            if (knockedOutEl) knockedOutEl.textContent = data.knocked_out || 0;
+            
+            // Calculate percentages
+            const total = data.total_applications || 0;
+            if (total > 0) {
+                if (shortlistedPercentEl) {
+                    shortlistedPercentEl.textContent = `${Math.round((data.shortlisted / total) * 100)}% of total`;
+                }
+                if (knockedOutPercentEl) {
+                    knockedOutPercentEl.textContent = `${Math.round((data.knocked_out / total) * 100)}% of total`;
+                }
+            } else {
+                if (shortlistedPercentEl) shortlistedPercentEl.textContent = '0% of total';
+                if (knockedOutPercentEl) knockedOutPercentEl.textContent = '0% of total';
+            }
+            
+            // Update search stats
+            if (visibleCountEl) visibleCountEl.textContent = data.jobs?.length || 0;
+            if (totalCountEl) totalCountEl.textContent = data.total_count || data.total_jobs || 0;
+            
+            // Update jobs table
+            updateJobsTable(data.jobs || []);
+            
+            // Show/hide clear search button
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchInput && clearBtn) {
+                clearBtn.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+            }
+        }
+
+        // Update jobs table
+        function updateJobsTable(jobs) {
+            const tbody = document.getElementById('jobsTableBody');
+            const noJobsMessage = document.getElementById('noJobsMessage');
+            
+            if (!tbody) return;
+            
+            if (!jobs || jobs.length === 0) {
+                tbody.innerHTML = '';
+                if (noJobsMessage) noJobsMessage.style.display = 'block';
+                return;
+            }
+            
+            if (noJobsMessage) noJobsMessage.style.display = 'none';
+            
+            let html = '';
+            jobs.forEach(job => {
+                const statusClass = job.status === 'active' ? 'status-active' : 
+                                   job.status === 'closed' ? 'status-closed' : 'status-draft';
+                
+                // Format date
+                const postedDate = job.created_at ? new Date(job.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                }) : 'N/A';
+                
+                html += `
+                    <tr>
+                        <td><strong>${job.title || 'Untitled Job'}</strong><br>
+                            <small style="color: #2b4c7c; font-size: 11px;">${job.description ? job.description.substring(0, 30) + '...' : ''}</small>
+                        </td>
+                        <td>${job.location || 'Remote'}</td>
+                        <td>${postedDate}</td>
+                        <td><span class="job-status ${statusClass}">${job.status || 'active'}</span></td>
+                        <td><strong>${job.applications || 0}</strong></td>
+                        <td>${job.shortlisted || 0}</td>
+                        <td>${job.knocked_out || 0}</td>
+                        <td>
+                            <button class="action-btn" onclick="viewJob('${job.job_id}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Handle search input
+        function handleSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (searchInput && clearBtn) {
+                clearBtn.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+            }
+            
+            // Debounce search to avoid too many requests
+            clearTimeout(window.searchTimeout);
+            window.searchTimeout = setTimeout(() => {
+                loadDashboard();
+            }, 500);
+        }
+
+        // Handle filter change
+        function handleFilter() {
+            loadDashboard();
+        }
+
+        // Handle sort change
+        function handleSort() {
+            loadDashboard();
+        }
+
+        // Clear search
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (searchInput) searchInput.value = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            
+            loadDashboard();
+        }
+
+        // View job details
+        function viewJob(jobId) {
+            window.location.href = `/static/job-details.html?id=${jobId}`;
+        }
+
+        // Add this for debugging if needed
+        window.testAPI = async function() {
+            try {
+                const response = await fetch('/api/test');
+                const data = await response.json();
+                alert('API is working!\n' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                alert('API error: ' + error);
+            }
+        };
+    </script>
+
+    <!-- Small test link (remove in production) -->
+    <div style="position: fixed; bottom: 10px; right: 10px; font-size: 12px; background: white; padding: 5px 10px; border-radius: 5px; border: 1px solid #cbd6e6; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 1000;">
+        <a href="#" onclick="testAPI(); return false;" style="color: #1e3a5f; text-decoration: none;">
+            <i class="fas fa-flask"></i> Test API
+        </a>
+    </div>
+</body>
+</html>

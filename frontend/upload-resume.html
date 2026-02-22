@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - Upload Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #1e3a5f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .success-card h2 {
+            color: #1e3a5f;
+            font-size: 24px;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-card p {
+            color: #2b4c7c;
+            margin-bottom: 1.5rem;
+        }
+
+        .job-details {
+            background: #e8f0fe;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .job-details h3 {
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 18px;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-label {
+            width: 100px;
+            color: #2b4c7c;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #1e3a5f;
+            flex: 1;
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .upload-card h2 {
+            color: #1e3a5f;
+            font-size: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd6e6;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8fafd;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-area:hover {
+            border-color: #1e3a5f;
+            background: #e8f0fe;
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: #2b4c7c;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area small {
+            color: #8a9db0;
+        }
+
+        .file-info {
+            background: #e8f0fe;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .file-info.show {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-name {
+            color: #1e3a5f;
+            font-weight: 500;
+        }
+
+        .file-size {
+            color: #2b4c7c;
+            font-size: 13px;
+        }
+
+        .remove-file {
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2b4c7c;
+        }
+
+        .btn-primary:disabled {
+            background: #cbd6e6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn-primary.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .actions .btn {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1e3a5f;
+            border: 1px solid #cbd6e6;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafd;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h2>DMless</h2>
+        </div>
+        <div class="nav-links">
+            <a href="/static/jobs.html">Browse Jobs</a>
+            <a href="/static/my-applications.html">My Applications</a>
+        </div>
+        <div class="user-menu">
+            <span class="user-name" id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Success Card (shown after passing MCQs) -->
+        <div class="success-card" id="successCard">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Congratulations!</h2>
+            <p>You've successfully passed the screening questions.</p>
+            <div class="job-details" id="jobDetails">
+                <h3>Job Details</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Position:</span>
+                    <span class="detail-value" id="jobTitle">Loading...</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Company:</span>
+                    <span class="detail-value">DMless</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value" id="jobLocation">Remote</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="upload-card">
+            <h2>Upload Your Resume</h2>
+            <p style="color: #2b4c7c; margin-bottom: 1.5rem;">Please upload your resume to complete the application.</p>
+
+            <div id="message" class="message"></div>
+
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload or drag and drop</p>
+                <small>PDF, DOC, DOCX up to 5MB</small>
+            </div>
+
+            <input type="file" id="fileInput" accept=".pdf,.doc,.docx" style="display: none;">
+
+            <div class="file-info" id="fileInfo">
+                <div>
+                    <div class="file-name" id="fileName"></div>
+                    <div class="file-size" id="fileSize"></div>
+                </div>
+                <div class="remove-file" onclick="removeFile()">
+                    <i class="fas fa-times"></i> Remove
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="uploadBtn" onclick="uploadResume()" disabled>
+                Upload Resume
+            </button>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-secondary" onclick="goToJobs()">
+                <i class="fas fa-briefcase"></i> Browse More Jobs
+            </button>
+            <button class="btn btn-secondary" onclick="goToApplications()">
+                <i class="fas fa-file-alt"></i> View My Applications
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let jobId = null;
+        let selectedFile = null;
+
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = '/static/login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(user);
+            if (currentUser.role !== 'candidate') {
+                window.location.href = '/static/dashboard.html';
+                return;
+            }
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            
+            // Get job ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            jobId = urlParams.get('job_id');
+            
+            if (!jobId) {
+                showMessage('No job specified', 'error');
+                return;
+            }
+            
+            loadJobDetails();
+        })();
+
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/static/login.html';
+        }
+
+        async function loadJobDetails() {
+            try {
+                const response = await fetch(`/jobs/${jobId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('jobTitle').textContent = data.job.title || 'Frontend Developer';
+                    document.getElementById('jobLocation').textContent = data.job.location || 'Remote';
+                }
+            } catch (error) {
+                console.error('Error loading job details:', error);
+            }
+        }
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#1e3a5f';
+            uploadArea.style.background = '#e8f0fe';
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd6e6';
+            uploadArea.style.background = '#f8fafd';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd6e6';
+            uploadArea.style.background = '#f8fafd';
+            
+            const file = e.dataTransfer.files[0];
+            if (file) handleFileSelect(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFileSelect(file);
+        });
+
+        function handleFileSelect(file) {
+            // Validate file type
+            const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!validTypes.includes(file.type)) {
+                showMessage('Please upload PDF or Word documents only', 'error');
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('File size must be less than 5MB', 'error');
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+            fileInfo.classList.add('show');
+            uploadBtn.disabled = false;
+            hideMessage();
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            fileInput.value = '';
+            fileInfo.classList.remove('show');
+            uploadBtn.disabled = true;
+        }
+
+        async function uploadResume() {
+            if (!selectedFile) {
+                showMessage('Please select a file', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('resume', selectedFile);
+            formData.append('job_id', jobId);
+            formData.append('candidate_id', currentUser.user_id);
+
+            uploadBtn.classList.add('loading');
+            hideMessage();
+
+            try {
+                const response = await fetch(`/applications/upload-resume/${currentUser.user_id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showMessage('Resume uploaded successfully! Your application has been submitted.', 'success');
+                    uploadBtn.disabled = true;
+                    fileInfo.classList.remove('show');
+                    selectedFile = null;
+                    fileInput.value = '';
+                } else {
+                    showMessage(data.message || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showMessage('Failed to connect to server', 'error');
+            } finally {
+                uploadBtn.classList.remove('loading');
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = `message ${type} show`;
+        }
+
+        function hideMessage() {
+            document.getElementById('message').classList.remove('show');
+        }
+
+        function goToJobs() {
+            window.location.href = '/static/jobs.html';
+        }
+
+        function goToApplications() {
+            window.location.href = '/static/my-applications.html';
+        }
+    </script>
+</body>
+</html>

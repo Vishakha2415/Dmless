@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - Create Account</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Brand */
+        .brand {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand h1 {
+            font-size: 36px;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            color: #2b4c7c;
+            font-size: 15px;
+        }
+
+        /* Signup Card */
+        .signup-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1px solid #cbd6e6;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e3a5f;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        input::placeholder {
+            color: #8a9db0;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231e3a5f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        /* Password strength */
+        .password-strength {
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            flex: 1;
+            background: #e2e8f0;
+            border-radius: 100px;
+            transition: all 0.2s ease;
+        }
+
+        .strength-bar.weak {
+            background: #ef4444;
+        }
+
+        .strength-bar.medium {
+            background: #f59e0b;
+        }
+
+        .strength-bar.strong {
+            background: #10b981;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            margin-top: 4px;
+            color: #2b4c7c;
+        }
+
+        /* Terms checkbox */
+        .terms-row {
+            margin: 24px 0;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #cbd6e6;
+            border-radius: 4px;
+            cursor: pointer;
+            accent-color: #1e3a5f;
+        }
+
+        .terms-checkbox span {
+            font-size: 14px;
+            color: #2b4c7c;
+        }
+
+        .terms-checkbox a {
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        /* Button */
+        .signup-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .signup-btn:hover {
+            background: #2b4c7c;
+        }
+
+        .signup-btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .signup-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Login Link */
+        .login-section {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #cbd6e6;
+        }
+
+        .login-section p {
+            color: #2b4c7c;
+            font-size: 14px;
+        }
+
+        .login-link {
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+            color: #2b4c7c;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .signup-card {
+                padding: 24px;
+            }
+            
+            .brand h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Brand -->
+        <div class="brand">
+            <h1>DMless</h1>
+            <p>Enterprise Hiring Platform</p>
+        </div>
+
+        <!-- Signup Card -->
+        <div class="signup-card">
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+            
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage"></div>
+
+            <!-- Signup Form -->
+            <form id="signupForm">
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="John Smith" 
+                        required
+                    >
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Work Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="you@company.com" 
+                        value="pranav123@gmail.com"
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Create a password" 
+                        value="Test@123"
+                        onkeyup="checkPasswordStrength(this.value)"
+                        required
+                    >
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">
+                        Use 8+ characters with uppercase, lowercase & numbers
+                    </div>
+                </div>
+
+                <!-- Role -->
+                <div class="form-group">
+                    <label for="role">I am a</label>
+                    <select id="role" name="role" required>
+                        <option value="" disabled selected>Select your role</option>
+                        <option value="recruiter" selected>Recruiter - I want to hire</option>
+                        <option value="candidate">Candidate - I want to apply</option>
+                    </select>
+                </div>
+
+                <!-- Terms Checkbox -->
+                <div class="terms-row">
+                    <label class="terms-checkbox">
+                        <input type="checkbox" id="terms" checked required>
+                        <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="signup-btn" id="signupBtn">
+                    Create Account
+                </button>
+
+                <!-- Login Link -->
+                <div class="login-section">
+                    <p>
+                        Already have an account?
+                        <a href="/static/login.html" class="login-link">Sign in</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const signupForm = document.getElementById('signupForm');
+        const signupBtn = document.getElementById('signupBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            const strengthBars = document.querySelectorAll('#passwordStrength .strength-bar');
+            const strengthText = document.getElementById('strengthText');
+            
+            // Reset all bars
+            strengthBars.forEach(bar => {
+                bar.classList.remove('weak', 'medium', 'strong');
+            });
+            
+            if (!password) {
+                strengthText.textContent = 'Use 8+ characters with uppercase, lowercase & numbers';
+                return;
+            }
+            
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Complexity checks
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+            
+            // Update bars
+            if (password.length < 8) {
+                strengthBars[0].classList.add('weak');
+                strengthText.textContent = 'Password too short';
+            } else if (strength <= 3) {
+                strengthBars[0].classList.add('weak');
+                strengthBars[1].classList.add('weak');
+                strengthText.textContent = 'Weak - add more variety';
+            } else if (strength <= 5) {
+                strengthBars[0].classList.add('medium');
+                strengthBars[1].classList.add('medium');
+                strengthBars[2].classList.add('medium');
+                strengthText.textContent = 'Medium password';
+            } else {
+                strengthBars[0].classList.add('strong');
+                strengthBars[1].classList.add('strong');
+                strengthBars[2].classList.add('strong');
+                strengthText.textContent = 'Strong password';
+            }
+        }
+
+        // Handle form submission
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const termsChecked = document.getElementById('terms').checked;
+
+            // Validation
+            if (!name || !email || !password || !role) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (!termsChecked) {
+                showError('Please agree to the Terms of Service');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+
+            // Password validation
+            if (password.length < 8) {
+                showError('Password must be at least 8 characters long');
+                return;
+            }
+
+            // Show loading state
+            setLoading(true);
+            hideError();
+            hideSuccess();
+
+            try {
+                // STEP 1: Sign up the user
+                const signupResponse = await fetch('/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        name: name,
+                        email: email, 
+                        password: password,
+                        role: role
+                    })
+                });
+
+                const signupData = await signupResponse.json();
+
+                if (signupResponse.ok && signupData.success) {
+                    // STEP 2: Automatically log in the user
+                    showSuccess('Account created! Logging you in...');
+                    
+                    const loginResponse = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            email: email, 
+                            password: password 
+                        })
+                    });
+
+                    const loginData = await loginResponse.json();
+
+                    if (loginResponse.ok && loginData.success) {
+                        // Store user data
+                        sessionStorage.setItem('user', JSON.stringify(loginData.user));
+                        
+                        console.log('Login successful:', loginData.user);
+
+                        // Redirect based on role
+                        if (loginData.user.role === 'recruiter') {
+                            window.location.href = '/static/dashboard.html';
+                        } else {
+                            window.location.href = '/static/apply.html';
+                        }
+                    } else {
+                        // If auto-login fails, still show success but redirect to login
+                        showSuccess('Account created! Please login with your credentials.');
+                        setTimeout(() => {
+                            window.location.href = '/static/login.html';
+                        }, 2000);
+                    }
+                } else {
+                    // Handle error response
+                    showError(signupData.message || 'Signup failed. Please try again.');
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showError('Unable to connect to server. Please try again.');
+                setLoading(false);
+            }
+        });
+
+        // Helper Functions
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hideError();
+            }, 5000);
+        }
+
+        function hideError() {
+            errorMessage.textContent = '';
+            errorMessage.classList.remove('show');
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.classList.add('show');
+        }
+
+        function hideSuccess() {
+            successMessage.textContent = '';
+            successMessage.classList.remove('show');
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                signupBtn.classList.add('loading');
+                signupBtn.disabled = true;
+            } else {
+                signupBtn.classList.remove('loading');
+                signupBtn.disabled = false;
+            }
+        }
+
+        // Check if user is already logged in
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'recruiter') {
+                    window.location.href = '/static/dashboard.html';
+                } else if (userData.role === 'candidate') {
+                    window.location.href = '/static/apply.html';
+                }
+            }
+        })();
+
+        // Initial password check (for pre-filled value)
+        window.addEventListener('load', function() {
+            const password = document.getElementById('password').value;
+            if (password) {
+                checkPasswordStrength(password);
+            }
+        });
+    </script>
+</body>
+</html>

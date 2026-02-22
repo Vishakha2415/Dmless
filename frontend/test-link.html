@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Link</title>
+</head>
+<body>
+    <h1>Test Hiring Link</h1>
+    <div id="result"></div>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('id');
+        
+        document.getElementById('result').innerHTML = `<p>Job ID from URL: <strong>${jobId || 'NOT FOUND'}</strong></p>`;
+        
+        if (jobId) {
+            fetch(`/jobs/${jobId}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('result').innerHTML += 
+                    '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            })
+            .catch(err => {
+                document.getElementById('result').innerHTML += '<p style="color:red">Error: ' + err + '</p>';
+            });
+        }
+    </script>
+</body>
+</html>

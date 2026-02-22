@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - Create Job</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: #1e3a5f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: #1e3a5f;
+            font-size: 28px;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #2b4c7c;
+            font-size: 16px;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .form-section h2 {
+            color: #1e3a5f;
+            font-size: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1px solid #cbd6e6;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e3a5f;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* MCQ Section */
+        .mcq-container {
+            background: #f8fafd;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .mcq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mcq-title {
+            font-weight: 600;
+            color: #1e3a5f;
+            font-size: 16px;
+        }
+
+        .mcq-question {
+            margin-bottom: 1rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .option-item input[type="radio"] {
+            width: auto;
+            margin-right: 0.5rem;
+            accent-color: #1e3a5f;
+        }
+
+        .option-item input[type="text"] {
+            flex: 1;
+        }
+
+        .correct-answer {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #e8f0fe;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1e3a5f;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .correct-answer select {
+            width: auto;
+            display: inline-block;
+            padding: 0.3rem 1rem;
+        }
+
+        /* Button */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2b4c7c;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1e3a5f;
+            border: 1px solid #cbd6e6;
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafd;
+            border-color: #1e3a5f;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Message */
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .message.error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        /* Hiring Link Section */
+        .link-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #e8f0fe;
+            border-radius: 12px;
+            border: 1px solid #1e3a5f;
+            display: none;
+        }
+
+        .link-section.show {
+            display: block;
+        }
+
+        .link-section h3 {
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+            font-size: 18px;
+        }
+
+        .link-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .link-box input {
+            flex: 1;
+            background: white;
+            border: 1px solid #cbd6e6;
+            padding: 12px;
+            font-size: 14px;
+            color: #1e3a5f;
+        }
+
+        .copy-btn {
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .copy-btn:hover {
+            background: #2b4c7c;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        .link-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .link-actions .btn {
+            flex: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .link-box {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <h2>DMless</h2>
+        </div>
+        <div class="nav-links">
+            <a href="/static/dashboard.html">Dashboard</a>
+            <a href="#" class="active">Post Job</a>
+        </div>
+        <div class="user-menu">
+            <span class="user-name" id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="page-header">
+            <h1>Create New Job Posting</h1>
+            <p>Fill in the job details and create 5 screening questions. After creation, you'll get a hiring link to share with candidates.</p>
+        </div>
+
+        <!-- Messages -->
+        <div id="successMessage" class="message success">
+            <i class="fas fa-check-circle"></i> <span id="successText">Job created successfully!</span>
+        </div>
+        <div id="errorMessage" class="message error">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText">Error message</span>
+        </div>
+
+        <!-- Form Card -->
+        <div class="form-card">
+            <form id="createJobForm">
+                <!-- Job Details Section -->
+                <div class="form-section">
+                    <h2><i class="fas fa-briefcase" style="margin-right: 8px;"></i> Job Details</h2>
+                    
+                    <div class="form-group">
+                        <label for="jobTitle">Job Role / Title *</label>
+                        <input 
+                            type="text" 
+                            id="jobTitle" 
+                            placeholder="e.g., Senior Software Engineer" 
+                            required
+                        >
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label for="jobType">Job Type</label>
+                            <select id="jobType">
+                                <option value="full-time">Full Time</option>
+                                <option value="part-time">Part Time</option>
+                                <option value="contract">Contract</option>
+                                <option value="internship">Internship</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input 
+                                type="text" 
+                                id="location" 
+                                placeholder="e.g., Remote, New York, London"
+                                value="Remote"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jobDescription">Job Description *</label>
+                        <textarea 
+                            id="jobDescription" 
+                            placeholder="Describe the role, responsibilities, and requirements..."
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Screening Questions Section -->
+                <div class="form-section">
+                    <h2><i class="fas fa-question-circle" style="margin-right: 8px;"></i> Screening Questions (5 MCQs)</h2>
+                    <p style="color: #2b4c7c; font-size: 14px; margin-bottom: 1.5rem;">
+                        Create 5 multiple choice questions. Candidates must answer all correctly to proceed.
+                    </p>
+
+                    <!-- MCQ 1 -->
+                    <div class="mcq-container" id="mcq1">
+                        <div class="mcq-header">
+                            <span class="mcq-title">Question 1</span>
+                        </div>
+                        <div class="mcq-question">
+                            <input 
+                                type="text" 
+                                class="mcq-question-input" 
+                                placeholder="Enter your question here"
+                                data-q="1"
+                                required
+                            >
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option A" data-q="1" data-opt="A" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option B" data-q="1" data-opt="B" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option C" data-q="1" data-opt="C" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option D" data-q="1" data-opt="D" required>
+                            </div>
+                        </div>
+                        <div class="correct-answer">
+                            <span>Correct Answer:</span>
+                            <select class="correct-answer-select" data-q="1" required>
+                                <option value="">Select</option>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- MCQ 2 -->
+                    <div class="mcq-container" id="mcq2">
+                        <div class="mcq-header">
+                            <span class="mcq-title">Question 2</span>
+                        </div>
+                        <div class="mcq-question">
+                            <input 
+                                type="text" 
+                                class="mcq-question-input" 
+                                placeholder="Enter your question here"
+                                data-q="2"
+                                required
+                            >
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option A" data-q="2" data-opt="A" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option B" data-q="2" data-opt="B" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option C" data-q="2" data-opt="C" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option D" data-q="2" data-opt="D" required>
+                            </div>
+                        </div>
+                        <div class="correct-answer">
+                            <span>Correct Answer:</span>
+                            <select class="correct-answer-select" data-q="2" required>
+                                <option value="">Select</option>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- MCQ 3 -->
+                    <div class="mcq-container" id="mcq3">
+                        <div class="mcq-header">
+                            <span class="mcq-title">Question 3</span>
+                        </div>
+                        <div class="mcq-question">
+                            <input 
+                                type="text" 
+                                class="mcq-question-input" 
+                                placeholder="Enter your question here"
+                                data-q="3"
+                                required
+                            >
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option A" data-q="3" data-opt="A" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option B" data-q="3" data-opt="B" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option C" data-q="3" data-opt="C" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option D" data-q="3" data-opt="D" required>
+                            </div>
+                        </div>
+                        <div class="correct-answer">
+                            <span>Correct Answer:</span>
+                            <select class="correct-answer-select" data-q="3" required>
+                                <option value="">Select</option>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- MCQ 4 -->
+                    <div class="mcq-container" id="mcq4">
+                        <div class="mcq-header">
+                            <span class="mcq-title">Question 4</span>
+                        </div>
+                        <div class="mcq-question">
+                            <input 
+                                type="text" 
+                                class="mcq-question-input" 
+                                placeholder="Enter your question here"
+                                data-q="4"
+                                required
+                            >
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option A" data-q="4" data-opt="A" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option B" data-q="4" data-opt="B" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option C" data-q="4" data-opt="C" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option D" data-q="4" data-opt="D" required>
+                            </div>
+                        </div>
+                        <div class="correct-answer">
+                            <span>Correct Answer:</span>
+                            <select class="correct-answer-select" data-q="4" required>
+                                <option value="">Select</option>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- MCQ 5 -->
+                    <div class="mcq-container" id="mcq5">
+                        <div class="mcq-header">
+                            <span class="mcq-title">Question 5</span>
+                        </div>
+                        <div class="mcq-question">
+                            <input 
+                                type="text" 
+                                class="mcq-question-input" 
+                                placeholder="Enter your question here"
+                                data-q="5"
+                                required
+                            >
+                        </div>
+                        <div class="options-grid">
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option A" data-q="5" data-opt="A" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option B" data-q="5" data-opt="B" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option C" data-q="5" data-opt="C" required>
+                            </div>
+                            <div class="option-item">
+                                <input type="text" class="mcq-option" placeholder="Option D" data-q="5" data-opt="D" required>
+                            </div>
+                        </div>
+                        <div class="correct-answer">
+                            <span>Correct Answer:</span>
+                            <select class="correct-answer-select" data-q="5" required>
+                                <option value="">Select</option>
+                                <option value="A">Option A</option>
+                                <option value="B">Option B</option>
+                                <option value="C">Option C</option>
+                                <option value="D">Option D</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success" id="submitBtn">
+                    <i class="fas fa-plus-circle"></i> Create Job & Generate Hiring Link
+                </button>
+            </form>
+
+            <!-- Hiring Link Section (shown after job creation) -->
+            <div class="link-section" id="hiringLinkSection">
+                <h3><i class="fas fa-link"></i> Your Hiring Link</h3>
+                <p style="color: #2b4c7c; margin-bottom: 1rem;">Share this link with candidates to apply for this job:</p>
+                
+                <div class="link-box">
+                    <input type="text" id="hiringLink" readonly value="">
+                    <button class="copy-btn" id="copyLinkBtn" onclick="copyLink()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+
+                <div class="link-actions">
+                    <button class="btn btn-secondary" onclick="window.open(document.getElementById('hiringLink').value, '_blank')">
+                        <i class="fas fa-external-link-alt"></i> Test Link
+                    </button>
+                    <button class="btn btn-primary" onclick="goToDashboard()">
+                        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    </button>
+                </div>
+
+                <p style="color: #2b4c7c; font-size: 13px; margin-top: 1rem;">
+                    <i class="fas fa-info-circle"></i> Candidates who get all answers correct will be able to upload their resume.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const userNameSpan = document.getElementById('userName');
+        const createJobForm = document.getElementById('createJobForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const successText = document.getElementById('successText');
+        const hiringLinkSection = document.getElementById('hiringLinkSection');
+        const hiringLinkInput = document.getElementById('hiringLink');
+
+        let currentUser = null;
+        let createdJobId = null;
+
+        // Check authentication
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = '/static/login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(user);
+            if (currentUser.role !== 'recruiter') {
+                window.location.href = '/static/apply.html';
+                return;
+            }
+            
+            userNameSpan.textContent = currentUser.name;
+        })();
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/static/login.html';
+        }
+
+        // Helper to show/hide messages
+        function showSuccess(msg) {
+            successText.textContent = msg;
+            successMessage.classList.add('show');
+            errorMessage.classList.remove('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorMessage.classList.add('show');
+            successMessage.classList.remove('show');
+        }
+
+        function hideMessages() {
+            successMessage.classList.remove('show');
+            errorMessage.classList.remove('show');
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            } else {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Generate hiring link
+        function generateHiringLink(jobId) {
+            const baseUrl = window.location.origin;
+            return `${baseUrl}/static/apply.html?id=${jobId}`;
+        }
+
+        // Copy link to clipboard
+        function copyLink() {
+            hiringLinkInput.select();
+            document.execCommand('copy');
+            
+            const copyBtn = document.getElementById('copyLinkBtn');
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.classList.add('copied');
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                copyBtn.classList.remove('copied');
+            }, 2000);
+        }
+
+        // Go to dashboard
+        function goToDashboard() {
+            window.location.href = '/static/dashboard.html';
+        }
+
+        // Form submission
+        createJobForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const title = document.getElementById('jobTitle').value.trim();
+            const description = document.getElementById('jobDescription').value.trim();
+            const jobType = document.getElementById('jobType').value;
+            const location = document.getElementById('location').value.trim();
+
+            // Validate job details
+            if (!title || !description) {
+                showError('Please fill in all job details');
+                return;
+            }
+
+            // Collect MCQs
+            const mcqs = [];
+            let valid = true;
+
+            for (let i = 1; i <= 5; i++) {
+                const questionInput = document.querySelector(`.mcq-question-input[data-q="${i}"]`);
+                const correctAnswerSelect = document.querySelector(`.correct-answer-select[data-q="${i}"]`);
+                
+                // Get all options for this question
+                const options = [];
+                for (let opt of ['A', 'B', 'C', 'D']) {
+                    const optionInput = document.querySelector(`.mcq-option[data-q="${i}"][data-opt="${opt}"]`);
+                    if (optionInput) {
+                        options.push({
+                            option: opt,
+                            text: optionInput.value.trim()
+                        });
+                    }
+                }
+
+                // Validate
+                if (!questionInput.value.trim()) {
+                    showError(`Please enter question ${i}`);
+                    valid = false;
+                    return;
+                }
+
+                for (let opt of options) {
+                    if (!opt.text) {
+                        showError(`Please fill all options for question ${i}`);
+                        valid = false;
+                        return;
+                    }
+                }
+
+                if (!correctAnswerSelect.value) {
+                    showError(`Please select the correct answer for question ${i}`);
+                    valid = false;
+                    return;
+                }
+
+                mcqs.push({
+                    question: questionInput.value.trim(),
+                    options: options,
+                    correct_answer: correctAnswerSelect.value
+                });
+            }
+
+            if (!valid) return;
+
+            // Prepare job data
+            const jobData = {
+                recruiter_id: currentUser.user_id,
+                title: title,
+                description: description,
+                job_type: jobType,
+                location: location,
+                mcqs: mcqs
+            };
+
+            console.log('Submitting job:', jobData);
+
+            // Submit
+            setLoading(true);
+            hideMessages();
+
+            try {
+                const response = await fetch('/jobs/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    createdJobId = result.job_id;
+                    
+                    // Generate and show hiring link
+                    const hiringLink = generateHiringLink(createdJobId);
+                    hiringLinkInput.value = hiringLink;
+                    
+                    // Show success message and link section
+                    showSuccess('Job created successfully! Your hiring link is ready.');
+                    hiringLinkSection.classList.add('show');
+                    
+                    // Hide the form or disable it
+                    createJobForm.style.opacity = '0.5';
+                    createJobForm.querySelectorAll('input, textarea, select, button').forEach(el => {
+                        el.disabled = true;
+                    });
+                    
+                } else {
+                    showError(result.message || 'Failed to create job');
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Unable to connect to server');
+                setLoading(false);
+            }
+        });
+    </script>
+</body>
+</html>

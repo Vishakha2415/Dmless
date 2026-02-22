@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - My Applications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: #1e3a5f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+            border-bottom: 2px solid white;
+            padding-bottom: 4px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #1e3a5f;
+            font-size: 28px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #2b4c7c;
+            font-size: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #2b4c7c;
+            font-size: 14px;
+        }
+
+        .applications-table {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h3 {
+            color: #1e3a5f;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: #2b4c7c;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid #cbd6e6;
+        }
+
+        td {
+            padding: 1rem;
+            color: #1e3a5f;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f8fafd;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-applied {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-shortlisted {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-knocked {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-hired {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .no-applications {
+            text-align: center;
+            padding: 3rem;
+            color: #2b4c7c;
+        }
+
+        .no-applications i {
+            font-size: 48px;
+            color: #1e3a5f;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #2b4c7c;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3a5f;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h2>DMless</h2>
+        </div>
+        <div class="nav-links">
+            <a href="/static/jobs.html">Browse Jobs</a>
+            <a href="#" class="active">My Applications</a>
+        </div>
+        <div class="user-menu">
+            <span class="user-name" id="userName">Loading...</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>My Applications</h1>
+            <p>Track your job applications and their status</p>
+        </div>
+
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="totalApplications">0</div>
+                <div class="stat-label">Total Applications</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeApplications">0</div>
+                <div class="stat-label">In Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="shortlistedApplications">0</div>
+                <div class="stat-label">Shortlisted</div>
+            </div>
+        </div>
+
+        <div class="applications-table">
+            <div class="table-header">
+                <h3>Application History</h3>
+            </div>
+
+            <div id="loadingState" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading your applications...</p>
+            </div>
+
+            <div id="noApplications" class="no-applications" style="display: none;">
+                <i class="fas fa-file-alt"></i>
+                <h3>No Applications Yet</h3>
+                <p>You haven't applied to any jobs yet.</p>
+                <a href="/static/jobs.html" style="color: #1e3a5f; font-weight: 600;">Browse Jobs</a>
+            </div>
+
+            <div id="applicationsContent" style="display: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = '/static/login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(user);
+            document.getElementById('userName').textContent = currentUser.name;
+            
+            if (currentUser.role === 'candidate') {
+                loadApplications();
+            } else {
+                window.location.href = '/static/dashboard.html';
+            }
+        })();
+
+        function logout() {
+            sessionStorage.removeItem('user');
+            window.location.href = '/static/login.html';
+        }
+
+        async function loadApplications() {
+            try {
+                const response = await fetch(`/applications/candidate/${currentUser.user_id}`);
+                const result = await response.json();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (result.success && result.applications.length > 0) {
+                    displayApplications(result.applications);
+                } else {
+                    document.getElementById('noApplications').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading applications:', error);
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('noApplications').style.display = 'block';
+            }
+        }
+
+        function displayApplications(applications) {
+            document.getElementById('statsGrid').style.display = 'grid';
+            document.getElementById('applicationsContent').style.display = 'block';
+            
+            // Update stats
+            document.getElementById('totalApplications').textContent = applications.length;
+            
+            const active = applications.filter(a => a.status === 'applied').length;
+            const shortlisted = applications.filter(a => a.status === 'shortlisted').length;
+            
+            document.getElementById('activeApplications').textContent = active;
+            document.getElementById('shortlistedApplications').textContent = shortlisted;
+            
+            // Display table
+            const tbody = document.getElementById('applicationsTableBody');
+            tbody.innerHTML = applications.map(app => {
+                const date = new Date(app.applied_at).toLocaleDateString();
+                let statusClass = 'status-applied';
+                if (app.status === 'shortlisted') statusClass = 'status-shortlisted';
+                if (app.status === 'knocked_out') statusClass = 'status-knocked';
+                if (app.status === 'hired') statusClass = 'status-hired';
+                
+                return `
+                    <tr>
+                        <td><strong>${app.job_title || 'Unknown Job'}</strong></td>
+                        <td>${date}</td>
+                        <td><span class="status-badge ${statusClass}">${app.status}</span></td>
+                        <td>${app.score || 0}/${app.total_questions || 5}</td>
+                        <td>
+                            <button class="logout-btn" style="padding: 0.25rem 0.75rem;" onclick="viewJob('${app.job_id}')">
+                                View Job
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewJob(jobId) {
+            window.location.href = `/static/apply.html?id=${jobId}`;
+        }
+    </script>
+</body>
+</html>

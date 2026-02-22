@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMless - Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f0f4fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Brand */
+        .brand {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand h1 {
+            font-size: 36px;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            color: #2b4c7c;
+            font-size: 15px;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid #cbd6e6;
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1px solid #cbd6e6;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e3a5f;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+
+        input::placeholder {
+            color: #8a9db0;
+        }
+
+        /* Options Row */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #cbd6e6;
+            border-radius: 4px;
+            cursor: pointer;
+            accent-color: #1e3a5f;
+        }
+
+        .remember-me span {
+            font-size: 14px;
+            color: #2b4c7c;
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+            color: #2b4c7c;
+        }
+
+        /* Button */
+        .login-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #2b4c7c;
+        }
+
+        .login-btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .login-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Signup Link */
+        .signup-section {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #cbd6e6;
+        }
+
+        .signup-section p {
+            color: #2b4c7c;
+            font-size: 14px;
+        }
+
+        .signup-link {
+            color: #1e3a5f;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+            color: #2b4c7c;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 24px;
+            }
+            
+            .brand h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Brand -->
+        <div class="brand">
+            <h1>DMless</h1>
+            <p>Enterprise Hiring Platform</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="login-card">
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Work Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="you@company.com" 
+                        required
+                    >
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Enter your password" 
+                        required
+                    >
+                </div>
+
+                <!-- Options -->
+                <div class="options-row">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="/static/forgot-password.html" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="login-btn" id="loginBtn">
+                    Sign In
+                </button>
+
+                <!-- Sign Up Link -->
+                <div class="signup-section">
+                    <p>
+                        New to DMless?
+                        <a href="/static/signup.html" class="signup-link">Create account</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Test API link (small) -->
+    <div style="position: fixed; bottom: 10px; right: 10px; font-size: 12px; background: white; padding: 5px 10px; border-radius: 5px; border: 1px solid #cbd6e6;">
+        <a href="#" onclick="testAPI(); return false;" style="color: #1e3a5f; text-decoration: none;">Test API</a>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Handle form submission
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Get form data
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                // Basic validation
+                if (!email || !password) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                // Email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+
+                // Show loading state
+                setLoading(true);
+                hideError();
+
+                try {
+                    // Make API call to login endpoint
+                    const response = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            email: email.trim(), 
+                            password: password 
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        // Store user data
+                        sessionStorage.setItem('user', JSON.stringify(data.user));
+                        
+                        console.log('Login successful:', data.user);
+
+                        // ✅ UPDATED: Redirect based on role
+                        if (data.user.role === 'recruiter') {
+                            window.location.href = '/static/dashboard.html';
+                        } else {
+                            window.location.href = '/static/jobs.html'; // Changed from apply.html to jobs.html
+                        }
+                    } else {
+                        // Handle error response
+                        showError(data.message || 'Invalid email or password');
+                        setLoading(false);
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showError('Unable to connect to server. Please try again.');
+                    setLoading(false);
+                }
+            });
+        }
+
+        // Helper Functions
+        function showError(message) {
+            if (errorMessage) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('show');
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    hideError();
+                }, 5000);
+            } else {
+                alert(message);
+            }
+        }
+
+        function hideError() {
+            if (errorMessage) {
+                errorMessage.textContent = '';
+                errorMessage.classList.remove('show');
+            }
+        }
+
+        function setLoading(isLoading) {
+            if (loginBtn) {
+                if (isLoading) {
+                    loginBtn.classList.add('loading');
+                    loginBtn.disabled = true;
+                } else {
+                    loginBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                }
+            }
+        }
+
+        // ✅ UPDATED: Check if user is already logged in
+        (function checkAuth() {
+            const user = sessionStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'recruiter') {
+                    window.location.href = '/static/dashboard.html';
+                } else if (userData.role === 'candidate') {
+                    window.location.href = '/static/jobs.html'; // Changed from apply.html to jobs.html
+                }
+            }
+        })();
+
+        // Test API function
+        window.testAPI = async function() {
+            try {
+                const response = await fetch('/auth/test');
+                const data = await response.json();
+                alert('API is working!\n' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                alert('API not reachable: ' + error);
+            }
+        };
+    </script>
+</body>
+</html>
