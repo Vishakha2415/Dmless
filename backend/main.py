@@ -13,10 +13,10 @@ from pathlib import Path
 from datetime import datetime
 
 # Import routers
-from auth import router as auth_router
-from dashboard import router as dashboard_router
-from jobs import router as jobs_router
-from applications import router as applications_router
+from backend.auth import router as auth_router
+from backend.dashboard import router as dashboard_router
+from backend.jobs import router as jobs_router
+from backend.applications import router as applications_router
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -144,4 +144,5 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
         log_level="info"
+
     )
