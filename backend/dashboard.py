@@ -11,7 +11,7 @@ import logging
 import re
 
 # Import database functions
-from database import (
+from backend.database import (
     get_user_by_id,
     db
 )
@@ -406,4 +406,5 @@ async def get_job_details(recruiter_id: str, job_id: str):
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Internal server error"}
+
         )
