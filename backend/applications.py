@@ -14,7 +14,7 @@ import shutil
 from pathlib import Path
 
 # Import database functions
-from database import (
+from backend.database import (
     get_user_by_id,
     get_job_by_id,
     save_application,
@@ -530,4 +530,5 @@ async def update_status(application_id: str, status: str, notes: str = ""):
                 "success": False,
                 "message": "Internal server error"
             }
+
         )
