@@ -13,7 +13,7 @@ import re
 import logging
 
 # Import database functions - updated for MongoDB
-from database import (
+from backend.database import (
     get_user_by_email,
     create_user,
     db
@@ -482,4 +482,5 @@ async def debug_password():
         
         return results
     except Exception as e:
+
         return {"error": str(e)}
